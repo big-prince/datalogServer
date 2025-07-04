@@ -13,7 +13,7 @@ import {
 import { UserPreferenceService } from './user-preference.service';
 import { JwtAuthGuard } from 'src/common/guards/auth-guard';
 
-@Controller('user-preferences')
+@Controller('api/user-preferences')
 @UseGuards(JwtAuthGuard)
 export class UserPreferenceController {
   constructor(private readonly userPreferenceService: UserPreferenceService) {}
@@ -26,6 +26,7 @@ export class UserPreferenceController {
 
   @Post('purchase-preferences')
   async updatePurchasePreferences(@Req() req: any, @Body() preferences: any) {
+    console.log('Updating purchase preferences:', preferences);
     const userId = req.user.id;
     return await this.userPreferenceService.updatePurchasePreferences(
       userId,
