@@ -9,7 +9,7 @@ import { HttpStatus } from '@nestjs/common';
 export class CorsMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const corsOptions: CorsOptions = {
-      origin: 'http://localhost:5173',
+      origin: ['http://localhost:5173', 'https://datalogg.netlify.app'],
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: [
         'Content-Type',
