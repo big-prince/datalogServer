@@ -11,9 +11,7 @@ dotenv.config();
 // Centralized TypeORM configuration for Datalog
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  url:
-    process.env.DATABASE_URL ||
-    'postgresql://postgres:dream831@localhost:5432/datalogdb?schema=public',
+  url: process.env.DATABASE_URL,
   entities: [User, Sim, DataLog, Setting, Token, UserPreference],
   synchronize: process.env.NODE_ENV === 'development',
   // logging: process.env.NODE_ENV === 'development',
