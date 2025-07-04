@@ -4,6 +4,7 @@ import { Sim } from '../entities/sim.entity';
 import { DataLog } from '../entities/datalog.entity';
 import { Setting } from '../entities/setting.entity';
 import { Token } from '../entities/token.entity';
+import { UserPreference } from '../entities/user-preference.entity';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,7 +14,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   url:
     process.env.DATABASE_URL ||
     'postgresql://postgres:dream831@localhost:5432/datalogdb?schema=public',
-  entities: [User, Sim, DataLog, Setting, Token],
+  entities: [User, Sim, DataLog, Setting, Token, UserPreference],
   synchronize: process.env.NODE_ENV === 'development',
   // logging: process.env.NODE_ENV === 'development',
   migrationsRun: false,

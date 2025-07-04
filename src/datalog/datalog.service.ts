@@ -52,9 +52,10 @@ export class DatalogService {
     }
   }
 
-  async findUserById(userId: string) {
+  async findUserById(userId: string, relations: boolean) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
+      relations: relations ? ['sims', 'settings'] : [],
     });
     if (!user) {
       throw new CustomError('User not found', 404);
@@ -65,13 +66,14 @@ export class DatalogService {
   async findUserByEmail(email: string) {
     const user = await this.userRepository.findOne({
       where: { email },
+      relations: ['sims', 'settings'],
     });
     return user;
   }
 
   async createDataLog(data: {
     userId: string;
-    simId: number;
+    simId: string;
     source: string;
     dataSize: number;
     price: number;
@@ -90,7 +92,7 @@ export class DatalogService {
   // Save token to database and generate a new one if needed
   async saveToken(payload: SaveTokenInterface): Promise<Token> {
     const userId: string = payload.userId;
-    const user = await this.findUserById(userId);
+    const user = await this.findUserById(userId, false);
     if (!user) {
       throw new CustomError('User not found', 404);
     }
@@ -102,18 +104,17 @@ export class DatalogService {
     if (existingToken && existingToken.expiresAt > new Date()) {
       return existingToken;
     }
-    console.log('Got Here...');
 
     const tokenPayload: TokenPayloadInterface = {
       sub: userId,
       email: user.email,
     };
+
     const secret = allEnv.jwtSecret || process.env.JWT_SECRET;
     if (!secret) {
       throw new CustomError('JWT secret not found', 500);
     }
     const token = jwt.sign(tokenPayload, secret);
-
     const expiresAt = new Date(Date.now() + 10800000);
     const newToken = this.tokenRepository.create({
       token,
@@ -122,7 +123,13 @@ export class DatalogService {
       user,
       isRevoked: false,
     });
-    return this.tokenRepository.save(newToken);
+    const saveToken = await this.tokenRepository
+      .save(newToken)
+      .catch((error) => {
+        console.error('Error saving token:', error);
+        throw new CustomError('Failed to save token', 500);
+      });
+    return saveToken;
   }
 
   // verifyToken(token: string): Promise<TokenPayloadInterface> {
@@ -133,4 +140,36 @@ export class DatalogService {
   //     throw new CustomError(error.message, 401);
   //   }
   // }
+
+  //SIMS
+  async createSim(user: User, simData: Partial<Sim>): Promise<Sim> {
+    try {
+      const sim = this.simRepository.create({
+        ...simData,
+        user,
+        nickname: simData.nickname || `${simData.provider} SIM`,
+      });
+      return await this.simRepository.save(sim);
+    } catch (error) {
+      console.error('Error creating SIM:', error);
+      throw new CustomError('Failed to create SIM', 500);
+    }
+  }
+
+  // SETTINGS
+  async createSetting(
+    user: User,
+    settingData: Partial<Setting>,
+  ): Promise<Setting> {
+    try {
+      const setting = this.settingRepository.create({
+        ...settingData,
+        user,
+      });
+      return await this.settingRepository.save(setting);
+    } catch (error) {
+      console.error('Error creating setting:', error);
+      throw new CustomError('Failed to create setting', 500);
+    }
+  }
 }

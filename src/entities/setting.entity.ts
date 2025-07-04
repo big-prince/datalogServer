@@ -1,18 +1,52 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn
+} from 'typeorm';
 import { User } from './user.entity';
+
+interface NotificationSettings {
+  expiryReminders: boolean;
+  highUsageWarnings: boolean;
+  usageSummaries: boolean;
+}
 
 @Entity()
 export class Setting {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
-  @Column('float', { nullable: true })
-  dailyDataUsage: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  dailyUsageEstimate: number;
 
-  @Column('json', { nullable: true })
-  notificationPrefs: any;
+  @Column({ type: 'enum', enum: ['GB', 'MB'], default: 'GB' })
+  usageUnit: 'GB' | 'MB';
 
-  @ManyToOne(() => User, (user) => user.settings, { onDelete: 'CASCADE' })
+  @Column({ type: 'enum', enum: ['GB', 'MB'], default: 'GB' })
+  preferredDisplayUnit: 'GB' | 'MB';
+
+  @Column('json', {
+    default: {
+      expiryReminders: true,
+      highUsageWarnings: false,
+      usageSummaries: false,
+    },
+  })
+  notifications: NotificationSettings;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @OneToOne(() => User, (user) => user.settings, { onDelete: 'CASCADE' })
+  @JoinColumn()
   user: User;
 }

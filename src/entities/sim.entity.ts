@@ -5,6 +5,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { DataLog } from './datalog.entity';
@@ -12,10 +14,22 @@ import { DataLog } from './datalog.entity';
 @Entity()
 export class Sim {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
+
+  @Column({ nullable: true })
+  nickname: string;
 
   @Column()
-  nickname: string;
+  provider: string;
+
+  @Column({ nullable: true })
+  phoneNumber: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.sims, { onDelete: 'CASCADE' })
   user: User;

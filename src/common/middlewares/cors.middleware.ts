@@ -8,12 +8,6 @@ import { HttpStatus } from '@nestjs/common';
 @Injectable()
 export class CorsMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log(
-      'CORS Middleware triggered for:',
-      req.url,
-      'Method:',
-      req.method,
-    );
     const corsOptions: CorsOptions = {
       origin: 'http://localhost:5173',
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -36,7 +30,6 @@ export class CorsMiddleware implements NestMiddleware {
         console.error('CORS Error:', err);
         throw new CustomError('CORS Error', HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      console.log('CORS Response Headers:', res.getHeaders());
       next();
     });
   }

@@ -13,6 +13,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { DatalogModule } from './datalog/datalog.module';
 import { AuthModule } from './auth/auth.module';
+import { SimsModule } from './sims/sims.module';
+import { SettingsModule } from './settings/settings.module';
+import { OnboardingModule } from './onboarding/onboarding.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { UserPreferenceModule } from './user-preference/user-preference.module';
 
 @Module({
   imports: [
@@ -29,6 +34,11 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     DatalogModule,
     AuthModule,
+    SimsModule,
+    SettingsModule,
+    OnboardingModule,
+    AnalyticsModule,
+    UserPreferenceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

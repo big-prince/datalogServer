@@ -9,6 +9,7 @@ const { Sim } = require('./entities/sim.entity');
 const { DataLog } = require('./entities/datalog.entity');
 const { Setting } = require('./entities/setting.entity');
 const { Token } = require('./entities/token.entity');
+const { UserPreference } = require('./entities/user-preference.entity');
 
 dotenv.config();
 const AppDataSource = new DataSource({
@@ -16,11 +17,8 @@ const AppDataSource = new DataSource({
   url:
     process.env.DATABASE_URL ||
     'postgresql://postgres:dream831@localhost:5432/datalogdb?schema=public',
-  entities: [User, Sim, DataLog, Setting, Token],
-  migrations:
-    process.env.NODE_ENV === 'production'
-      ? ['dist/migrations/*{.ts,.js}']
-      : ['src/migrations/*{.ts,.js}'],
+  entities: [User, Sim, DataLog, Setting, Token, UserPreference],
+  migrations: ['src/migrations/*{.ts,.js}'],
   synchronize: process.env.NODE_ENV === 'development',
   migrationRun: false,
 });

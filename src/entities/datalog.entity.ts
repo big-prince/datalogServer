@@ -5,7 +5,7 @@ import { Sim } from './sim.entity';
 @Entity()
 export class DataLog {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   source: string;
@@ -24,6 +24,12 @@ export class DataLog {
 
   @Column({ nullable: true })
   expiryDate: Date;
+
+  @Column({ nullable: true })
+  actualFinishDate: Date;
+
+  @Column({ default: false })
+  isFinished: boolean;
 
   @ManyToOne(() => User, (user) => user.dataLogs, { onDelete: 'CASCADE' })
   user: User;

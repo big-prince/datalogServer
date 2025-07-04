@@ -95,7 +95,6 @@ export class AuthService {
     if (!user) {
       throw new CustomError('User not found', 404);
     }
-    console.log(data, user);
     const isPasswordValid = await comparePassword(data.password, user.password);
     if (!isPasswordValid) {
       throw new CustomError('Invalid password', 401);
@@ -105,42 +104,20 @@ export class AuthService {
       sub: user.id.toString(),
       email: user.email,
     };
+
     const accessToken = this.generateToken(payload);
-    const refreshToken = this.generateToken({
-      sub: user.id.toString(),
-      email: user.email,
-    });
 
-    await this.saveRefreshToken({
-      userId: user.id.toString(),
-      token: refreshToken,
-    });
-
-    //check if user has onboarded before
-    if (user?.sims?.length > 0) {
-      returnModule = {
-        message: 'User logged in successfully',
-        accessToken: accessToken,
-        userID: user.id.toString(),
-        onboarded: {
-          sims: true,
-          settings: false,
-        },
-      };
-      if (user?.dataLogs?.length > 0) {
-        returnModule.onboarded.settings = true;
-      }
-    } else {
-      returnModule = {
-        message: 'User logged in successfully',
-        accessToken: accessToken,
-        userID: user.id.toString(),
-        onboarded: {
-          sims: false,
-          settings: false,
-        },
-      };
-    }
+    returnModule = {
+      message: 'Login successful',
+      accessToken: accessToken,
+      userID: user.id.toString(),
+      userFullName: user.fullName,
+      userEmail: user.email,
+      onboarded: {
+        sims: user.sims?.length > 0,
+        settings: !!user.settings,
+      },
+    };
 
     return returnModule;
   }
