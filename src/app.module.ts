@@ -18,6 +18,7 @@ import { SettingsModule } from './settings/settings.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { UserPreferenceModule } from './user-preference/user-preference.module';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { UserPreferenceModule } from './user-preference/user-preference.module';
     OnboardingModule,
     AnalyticsModule,
     UserPreferenceModule,
+    CronModule,
   ],
   controllers: [AppController],
   providers: [AppService],
